@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Seasonal Night Scene with Bears</title>
+  <style>
+    :root {
+      --size: 160px;    
+      --speed: 7s;      
+      --walk-end: 40vw;
+    }
+
+    /* Prevent text zooming */
+    html { -webkit-text-size-adjust: 100%; }
+
+    /* Mobile-first responsive sizes */
+    @media (max-width: 768px) {
+      :root {
+        --size: 120px;
+        --walk-end: 40vw;
+      }
+    }
+
+    @media (max-width: 480px) {
+      :root {
+        --size: 100px;
+        --walk-end: 40vw;
+      }
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background: #0b0f1f;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      position: relative;
+      font-family: sans-serif;
+      transition: background 1s ease-in-out;
+    }
+
+    /* Season backgrounds */
+    .summer {
+      background: linear-gradient(to bottom, #ff7b54 0%, #ff9a76 30%, #ffad84 60%, #013220 100%);
+    }
+
+    .rain {
+      background: linear-gradient(to bottom, #2c3e50 0%, #34495e 30%, #7f8c8d 60%, #013220 100%);
+    }
+
+    .winter {
+      background: linear-gradient(to bottom, #74b9ff 0%, #a29bfe 30%, #fd79a8 60%, #013220 100%);
+    }
+
+    .ground {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      height: 100px;
+      background: #013220;
+      z-index: 1;
+      transition: background 1s ease-in-out;
+    }
+
+    .summer .ground {
+      background: #2d5016;
+    }
+
+    .rain .ground {
+      background: #1a252f;
+    }
+
+    .winter .ground {
+      background: #e8f4fd;
+    }
+
+    .moon {
+      position: fixed;
+      top: 50px;
+      right: 100px;
+      width: 150px;
+      height: 150px;
+      background: #fff8dc;
+      border-radius: 50%;
+      box-shadow: 0 0 60px 20px #fff8dc;
+      z-index: 0;
+      transition: all 1s ease-in-out;
+    }
+
+    .summer .moon {
+      background: #ffd700;
+      box-shadow: 0 0 80px 30px #ffd700;
+    }
+
+    .rain .moon {
+      background: #95a5a6;
+      box-shadow: 0 0 40px 10px #95a5a6;
+      opacity: 0.3;
+    }
+
+    .winter .moon {
+      background: #ecf0f1;
+      box-shadow: 0 0 100px 40px #ecf0f1;
+    }
+
+    /* Responsive moon */
+    @media (max-width: 768px) {
+      .moon {
+        width: 120px;
+        height: 120px;
+        right: 50px;
+        top: 40px;
+        box-shadow: 0 0 50px 15px #fff8dc;
+      }
+      .summer .moon { box-shadow: 0 0 60px 20px #ffd700; }
+      .rain .moon { box-shadow: 0 0 30px 8px #95a5a6; }
+      .winter .moon { box-shadow: 0 0 70px 25px #ecf0f1; }
+    }
+
+    @media (max-width: 480px) {
+      .moon {
+        width: 100px;
+        height: 100px;
+        right: 30px;
+        top: 30px;
+        box-shadow: 0 0 40px 10px #fff8dc;
+      }
+      .summer .moon { box-shadow: 0 0 50px 15px #ffd700; }
+      .rain .moon { box-shadow: 0 0 25px 6px #95a5a6; }
+      .winter .moon { box-shadow: 0 0 60px 20px #ecf0f1; }
+    }
+
+    .tree {
+      position: fixed;
+      right: 15vw;
+      bottom: 100px;
+      width: 200px;
+      height: 300px;
+      z-index: 3;
+      transition: all 1s ease-in-out;
+    }
+
+    @media (max-width: 768px) {
+      .tree {
+        width: 160px;
+        height: 240px;
+        right: 10vw;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .tree {
+        width: 120px;
+        height: 180px;
+        right: 8vw;
+      }
+    }
+
+    /* Tree trunk */
+    .tree::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 80px;
+      background: #8b4513;
+      border-radius: 5px;
+    }
+
+    @media (max-width: 768px) {
+      .tree::before { width: 25px; height: 65px; }
+    }
+
+    @media (max-width: 480px) {
+      .tree::before { width: 20px; height: 50px; }
+    }
+
+    /* Tree crown - Summer */
+    .tree::after {
+      content: '';
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 140px;
+      background: #228b22;
+      border-radius: 50% 50% 40% 60%;
+      box-shadow: 
+        -30px -20px 0 -10px #32cd32,
+        30px -30px 0 -15px #228b22,
+        -20px 20px 0 -20px #90ee90;
+      transition: all 1s ease-in-out;
+    }
+
+    @media (max-width: 768px) {
+      .tree::after {
+        width: 110px;
+        height: 110px;
+        bottom: 50px;
+        box-shadow: 
+          -25px -15px 0 -8px #32cd32,
+          25px -25px 0 -12px #228b22,
+          -15px 15px 0 -15px #90ee90;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .tree::after {
+        width: 80px;
+        height: 80px;
+        bottom: 35px;
+        box-shadow: 
+          -20px -12px 0 -6px #32cd32,
+          20px -20px 0 -10px #228b22,
+          -12px 12px 0 -12px #90ee90;
+      }
+    }
+
+    /* Rain season tree */
+    .rain .tree::after {
+      background: #2c5f2d;
+      box-shadow: 
+        -30px -20px 0 -10px #1e4620,
+        30px -30px 0 -15px #2c5f2d,
+        -20px 20px 0 -20px #3a7c3e;
+    }
+
+    @media (max-width: 768px) {
+      .rain .tree::after {
+        box-shadow: 
+          -25px -15px 0 -8px #1e4620,
+          25px -25px 0 -12px #2c5f2d,
+          -15px 15px 0 -15px #3a7c3e;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .rain .tree::after {
+        box-shadow: 
+          -20px -12px 0 -6px #1e4620,
+          20px -20px 0 -10px #2c5f2d,
+          -12px 12px 0 -12px #3a7c3e;
+      }
+    }
+
+    /* Winter season tree */
+    .winter .tree::after {
+      background: #8b4513;
+      box-shadow: 
+        -30px -20px 0 -10px #a0522d,
+        30px -30px 0 -15px #654321,
+        -20px 20px 0 -20px #daa520,
+        0 -40px 15px 0px #ffffff,
+        -40px -10px 10px 0px #ffffff,
+        40px -10px 10px 0px #ffffff;
+    }
+
+    @media (max-width: 768px) {
+      .winter .tree::after {
+        box-shadow: 
+          -25px -15px 0 -8px #a0522d,
+          25px -25px 0 -12px #654321,
+          -15px 15px 0 -15px #daa520,
+          0 -35px 12px 0px #ffffff,
+          -35px -8px 8px 0px #ffffff,
+          35px -8px 8px 0px #ffffff;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .winter .tree::after {
+        box-shadow: 
+          -20px -12px 0 -6px #a0522d,
+          20px -20px 0 -10px #654321,
+          -12px 12px 0 -12px #daa520,
+          0 -25px 8px 0px #ffffff,
+          -25px -6px 6px 0px #ffffff,
+          25px -6px 6px 0px #ffffff;
+      }
+    }
+
+    /* Rain effect */
+    .rain-drop {
+      position: absolute;
+      width: 2px;
+      height: 20px;
+      background: linear-gradient(to bottom, transparent, #74b9ff, transparent);
+      animation: fall linear infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes fall {
+      to { transform: translateY(100vh); }
+    }
+
+    /* Snow effect */
+    .snowflake {
+      position: absolute;
+      color: white;
+      user-select: none;
+      pointer-events: none;
+      animation: snowfall linear infinite;
+    }
+
+    @keyframes snowfall {
+      0% { transform: translateY(-100px) rotate(0deg); }
+      100% { transform: translateY(100vh) rotate(360deg); }
+    }
+
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+    }
+
+    .shooting-star {
+      position: absolute;
+      width: 80px;
+      height: 2px;
+      background: white;
+      transform: rotate(-45deg);
+      opacity: 0.9;
+      animation: shoot 1s linear forwards;
+    }
+
+    @media (max-width: 480px) {
+      .shooting-star { width: 60px; }
+    }
+
+    @keyframes shoot {
+      0%   { transform: translate(0, 0) rotate(-45deg); opacity: 1; }
+      100% { transform: translate(-300px, 300px) rotate(-45deg); opacity: 0; }
+    }
+
+    .street-light {
+      position: absolute;
+      bottom: 100px;
+      left: 30vw;
+      width: 10px;
+      height: 200px;
+      background: #444;
+      border-radius: 3px;
+      z-index: 2;
+    }
+
+    .street-light::after {
+      content: '';
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      width: 40px;
+      height: 40px;
+      background: #666;
+      border-radius: 100%;
+      transition: all 1s ease-in-out;
+    }
+
+    .street-light.night::after {
+      background: yellow;
+      box-shadow: 0 0 30px 15px rgba(255, 255, 0, 0.6);
+    }
+
+    .street-light .lamp-light {
+      position: absolute;
+      top: -20px;
+      left: -60px;
+      width: 130px;
+      height: 60px;
+      background: transparent;
+      opacity: 0;
+      transform: rotateX(50deg);
+      filter: blur(20px);
+      z-index: -1;
+      transition: all 1s ease-in-out;
+    }
+
+    .street-light.night .lamp-light {
+      background: radial-gradient(circle, rgba(255,255,0,0.4) 0%, rgba(255,255,0,0.05) 70%);
+      opacity: 2;
+    }
+
+    /* Responsive street light */
+    @media (max-width: 768px) {
+      .street-light {
+        height: 180px;
+        width: 8px;
+      }
+      
+      .street-light::after {
+        width: 35px;
+        height: 35px;
+        top: -12px;
+        left: -13px;
+        background: #666;
+      }
+
+      .street-light.night::after {
+        background: yellow;
+        box-shadow: 0 0 25px 12px rgba(255, 255, 0, 0.6);
+      }
+      
+      .street-light .lamp-light {
+        width: 110px;
+        height: 50px;
+        left: -50px;
+        top: -18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .street-light {
+        height: 150px;
+        width: 6px;
+      }
+      
+      .street-light::after {
+        width: 30px;
+        height: 30px;
+        top: -10px;
+        left: -12px;
+        background: #666;
+      }
+
+      .street-light.night::after {
+        background: yellow;
+        box-shadow: 0 0 20px 10px rgba(255, 255, 0, 0.6);
+      }
+      
+      .street-light .lamp-light {
+        width: 90px;
+        height: 40px;
+        left: -42px;
+        top: -15px;
+      }
+    }
+
+    .character {
+      position: fixed;
+      bottom: 80px;
+      left: 10vw;
+      width: var(--size);
+      z-index: 5;
+    }
+
+    .character img {
+      width: 90%;
+      height: auto;
+      display: block;
+    }
+
+    .overlay {
+      position: fixed;
+      bottom: 80px;
+      width: var(--size);
+      right: 10vw;
+      z-index: 10;
+    }
+
+    .overlay img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .chandu {
+      position: fixed;
+      bottom: 80px;
+      width: calc(var(--size) * 1.1);
+      right: 25vw;
+      z-index: 10;
+    }
+
+     .chandu img {
+  	width: 80px;   /* Or 200px, depending on how big you want */
+  	height: auto;   /* Keeps the proportions */
+    }
+
+     .chandu {
+  	right: 14vw;   /* instead of 25vw */
+    }
+
+    .chandu .bear-sprite {
+      width: 100px;
+      height: 100px;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    /* Main bear body */
+    .chandu .bear-body {
+      width: 70px;
+      height: 70px;
+      background: #deb887;
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      top: 30px;
+      transform: translateX(-50%);
+      border: 3px solid #8b4513;
+      animation: chandu-bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes chandu-bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0px); }
+      50% { transform: translateX(-50%) translateY(-3px); }
+    }
+
+    /* Bear ears */
+    .chandu .bear-ear {
+      width: 24px;
+      height: 24px;
+      background: #deb887;
+      border-radius: 50%;
+      position: absolute;
+      top: 20px;
+      border: 2px solid #8b4513;
+    }
+
+    .chandu .bear-ear.left { left: 25px; }
+    .chandu .bear-ear.right { right: 25px; }
+
+    /* Bear eyes */
+    .chandu .bear-eye {
+      width: 6px;
+      height: 6px;
+      background: black;
+      border-radius: 50%;
+      position: absolute;
+      top: 50px;
+    }
+
+    .chandu .bear-eye.left { left: 43px; }
+    .chandu .bear-eye.right { right: 43px; }
+
+    /* Bear mouth */
+    .chandu .bear-mouth {
+      width: 8px;
+      height: 6px;
+      background: black;
+      border-radius: 50%;
+      position: absolute;
+      top: 65px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* Bear cheeks */
+    .chandu .bear-cheek {
+      width: 16px;
+      height: 16px;
+      background: #ffd700;
+      border-radius: 50%;
+      position: absolute;
+      top: 55px;
+      opacity: 0.7;
+    }
+
+    .chandu .bear-cheek.left { left: 25px; }
+    .chandu .bear-cheek.right { right: 25px; }
+
+    /* Small white bear in arms */
+    .chandu .small-bear {
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 1px solid #ccc;
+    }
+
+    .chandu .small-bear::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: -3px;
+      left: 3px;
+      border: 1px solid #ccc;
+    }
+
+    .chandu .small-bear::after {
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: -3px;
+      right: 3px;
+      border: 1px solid #ccc;
+    }
+
+    .dogesh {
+      position: fixed;
+      bottom: 50px;
+      width: calc(var(--size) *0.35);
+      right: 35vw;
+      z-index: 10;
+    }
+
+     .dogesh img {
+ 	 width: 100%;
+ 	 height: auto;
+    }
+
+    .dogesh .dog-sprite {
+      width: 60px;
+      height: 40px;
+      background: #8b4513;
+      border-radius: 50% 50% 40% 40%;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    .dogesh .dog-sprite::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: -5px;
+      width: 12px;
+      height: 12px;
+      background: #8b4513;
+      border-radius: 50%;
+    }
+
+    .dogesh .dog-sprite::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      right: -5px;
+      width: 12px;
+      height: 12px;
+      background: #8b4513;
+      border-radius: 50%;
+    }
+
+    .dogesh .dog-eye {
+      position: absolute;
+      top: 8px;
+      width: 3px;
+      height: 3px;
+      background: black;
+      border-radius: 50%;
+    }
+
+    .dogesh .dog-eye.left { left: 15px; }
+    .dogesh .dog-eye.right { right: 15px; }
+
+    .dogesh .dog-nose {
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 8px;
+      background: #654321;
+      border-radius: 50%;
+    }
+
+    @media (max-width: 768px) {
+      .character { left: 5vw; }
+      .overlay { right: 5vw; }
+      .chandu { right: 20vw; }
+      .dogesh { right: 30vw; }
+      .street-light { left: 45vw; }
+    }
+
+    @media (max-width: 480px) {
+      .character { left: 3vw; }
+      .overlay { right: 3vw; }
+      .chandu { right: 18vw; }
+      .dogesh { right: 28vw; }
+      .street-light { left: 47vw; }
+    }
+
+    @media (min-width: 1024px) {
+      .character { left: 10vw !important; }
+      .overlay { right: 10vw !important; }
+      .chandu { right: 25vw !important; }
+      .dogesh { right: 35vw !important; }
+      .street-light { left: 45vw !important; height: 200px !important; width: 10px !important; }
+      .street-light::after {
+        width: 40px !important; height: 40px !important;
+        top: -15px !important; left: -15px !important;
+        box-shadow: 0 0 30px 15px rgba(255, 255, 0, 0.6) !important;
+      }
+      .street-light .lamp-light {
+        width: 130px !important; height: 60px !important;
+        left: -60px !important; top: -20px !important;
+      }
+    }
+
+    .name-cloud {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      color: black;
+      padding: 8px 14px;
+      border-radius: 25px;
+      font-family: sans-serif;
+      font-size: 14px;
+      box-shadow: 0 0 10px rgba(255,255,255,0.3);
+      opacity: 1;
+      visibility: visible;
+      transition:none !important;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      .name-cloud { font-size: 13px; padding: 7px 12px; top: -45px; }
+    }
+    @media (max-width: 480px) {
+      .name-cloud { font-size: 12px; padding: 6px 10px; top: -40px; }
+    }
+
+    .show { opacity: 1; }
+
+    #dog .name-cloud {
+      top: auto;
+      bottom: -30px;
+    }
+
+    @media (max-width: 768px) { #dog .name-cloud { bottom: -28px; } }
+    @media (max-width: 480px) { #dog .name-cloud { bottom: -25px; } }
+
+    /* Button */
+    #reveal-btn {
+      display: inline-block;
+      position: fixed;
+      bottom: 150px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      font-size: 16px;
+      background: yellow;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255,255,0,0.7);
+      z-index: 20;
+    }
+
+    @media (max-width: 768px) {
+      #reveal-btn { bottom: 130px; font-size: 15px; padding: 9px 18px; }
+    }
+
+    @media (max-width: 480px) {
+      #reveal-btn {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        bottom: auto;
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+    }
+
+    /* Message Popup */
+    #message {
+      display: none;
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 600px;
+      background: white;
+      color: black;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(255,255,255,0.5);
+      text-align: center;
+      z-index: 30;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+      #message { max-width: 90%; padding: 18px; font-size: 15px; top: 15%; }
+    }
+    @media (max-width: 480px) {
+      #message { max-width: 95%; padding: 16px; font-size: 14px; top: 10%; border-radius: 15px; line-height: 1.4; }
+    }
+
+    /* Landscape adjustments */
+    @media (max-width: 768px) and (orientation: landscape) {
+      .character, .overlay, .chandu { bottom: 80px; }
+      .dogesh { bottom: 50px; }
+      #reveal-btn { bottom: 100px; }
+      #message { top: 5%; max-height: 80vh; overflow-y: auto; }
+      .name-cloud { top: -35px; }
+      #dog .name-cloud { bottom: -20px; }
+      .tree { bottom: 60px; }
+    }
+
+    /* Fireworks */
+    .firework-spark {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      animation: spark 1.5s ease-out forwards;
+    }
+    @keyframes spark {
+      0% { transform: scale(1) translate(0, 0); opacity: 1; }
+      50% { opacity: 1; transform: scale(0.8) translate(var(--move-x, 0), var(--move-y, 0)); }
+      100% { transform: scale(0) translate(var(--move-x, 0), var(--move-y, 0)); opacity: 0; }
+    }
+
+    .rocket {
+      position: absolute;
+      width: 3px;
+      height: 15px;
+      background: linear-gradient(to top, #ff6b35, #f7931e);
+      border-radius: 2px;
+      z-index: 25;
+      animation: rocket-launch 1s ease-out forwards;
+    }
+    @keyframes rocket-launch {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-300px); opacity: 0; }
+    }
+    .rocket::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-top: 10px solid #ff4444;
+      filter: blur(1px);
+    }
+
+    .celebration-particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #ffd700;
+      border-radius: 50%;
+      animation: celebrate 2s ease-out forwards;
+      z-index: 24;
+    }
+    @keyframes celebrate {
+      0% { transform: scale(1) rotate(0deg); opacity: 1; }
+      100% { transform: scale(0) rotate(360deg); opacity: 0; }
+    }
+
+    /* Season indicator */
+    .season-indicator {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      z-index: 30;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      opacity: 0.8;
+    }
+
+    @media (max-width: 480px) {
+      .season-indicator { font-size: 16px; top: 15px; left: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="season-indicator" id="season-indicator">Summer 🌞</div>
+  <div class="stars" id="stars"></div>
+  <div class="moon"></div>
+  <div class="ground"></div>
+  <div class="tree"></div>
+
+  <div id="street-lights">
+    <div class="street-light night"><div class="lamp-light"></div></div>
+  </div>
+
+  <div class="character" id="walker">
+    <div class="name-cloud" id="walker-name">Fandi</div>
+    <img src="C:/Users/arjun/Downloads/bear-panda-waiting.gif" alt="Walking bear">
+  </div>
+
+  <div class="overlay" id="girl">
+    <div class="name-cloud" id="girl-name">Bittu</div>
+    <img src="C:/Users/arjun/Downloads/busy-cute.gif" alt="Busy bear">
+  </div>
+
+  <div class="chandu" id="chandu">
+    <div class="name-cloud" id="chandu-name">Chandu</div>
+    <img src="C:/Users/arjun/Downloads/chandu.gif" alt="chandu">  
+  </div>
+
+  <div class="dogesh" id="dog">
+    <div class="name-cloud" id="dog-name">Neo</div>
+    <img src="C:/Users/arjun/Downloads/dog.gif" alt="Neo"> 
+    
+  </div>
+
+  <button id="reveal-btn">Click Here</button>
+
+  <div id="message">
+   Bittu, tellarlu work chestune vuntunava? Daily nee text calls kosam waiting full boringgguuuu(joke), chitti. How many more days will I have to go through this treatment? You said you’re not talking with anyone. The people who talk to you, if they send you a message once and don’t get a reply, they’ll just leave. But me… every day I keep planning how to talk to you, how to make you laugh, how to surprise you. if you want you can be cold on other people but please have exception for me, like in past you dont with anyone  but talk with me daily now also be like that pleasee ammaaaa jathi ratanalu chittiiiiiiiii, nuvu enni rojulu eela behave chesina nuvu normal ave varuku nee burra thinta i wont give up buahahaha enni days ana wait chesta nuvu nee depression nunchi vache antha varuku malla normal ave antha varuku,  you can trust me like how you trust neo 😁    
+  </div>
+
+  <script>
+    let fireworksActive = false;
+    let fireworkInterval;
+    let shootingStarInterval;
+    let animationStarted = false;
+    let seasonInterval;
+    let weatherInterval;
+    let currentSeason = 0;
+    const seasons = ['summer', 'rain', 'winter'];
+    const seasonNames = ['Summer 🌞', 'Rainy 🌧️', 'Winter ❄️'];
+
+    function changeSeasons() {
+      const body = document.body;
+      const indicator = document.getElementById('season-indicator');
+      const streetLight = document.querySelector('.street-light');
+      
+      // Remove all season classes
+      seasons.forEach(season => body.classList.remove(season));
+      
+      // Add current season class
+      body.classList.add(seasons[currentSeason]);
+      indicator.textContent = seasonNames[currentSeason];
+      
+      // Control street light based on season (rain = night, others = day/evening)
+      if (seasons[currentSeason] === 'rain' || seasons[currentSeason] === 'winter') {
+        streetLight.classList.add('night');
+      } else {
+        streetLight.classList.remove('night');
+      }
+      
+      // Clear existing weather effects
+      document.querySelectorAll('.rain-drop, .snowflake').forEach(el => el.remove());
+      
+      // Add weather effects
+      if (seasons[currentSeason] === 'rain') {
+        createRainEffect();
+      } else if (seasons[currentSeason] === 'winter') {
+        createSnowEffect();
+      }
+      
+      currentSeason = (currentSeason + 1) % seasons.length;
+    }
+
+    function createRainEffect() {
+      if (weatherInterval) clearInterval(weatherInterval);
+      weatherInterval = setInterval(() => {
+        if (!document.body.classList.contains('rain')) return;
+        
+        const rainCount = window.innerWidth <= 480 ? 5 : 10;
+        for (let i = 0; i < rainCount; i++) {
+          const drop = document.createElement('div');
+          drop.classList.add('rain-drop');
+          drop.style.left = Math.random() * 100 + 'vw';
+          drop.style.top = '-20px';
+          drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
+          document.body.appendChild(drop);
+          setTimeout(() => { if (drop.parentNode) drop.remove(); }, 2000);
+        }
+      }, 100);
+    }
+
+    function createSnowEffect() {
+      if (weatherInterval) clearInterval(weatherInterval);
+      weatherInterval = setInterval(() => {
+        if (!document.body.classList.contains('winter')) return;
+        
+        const snowCount = window.innerWidth <= 480 ? 3 : 5;
+        for (let i = 0; i < snowCount; i++) {
+          const flake = document.createElement('div');
+          flake.classList.add('snowflake');
+          flake.textContent = '❄';
+          flake.style.left = Math.random() * 100 + 'vw';
+          flake.style.top = '-20px';
+          flake.style.fontSize = (Math.random() * 10 + 10) + 'px';
+          flake.style.animationDuration = (Math.random() * 3 + 2) + 's';
+          document.body.appendChild(flake);
+          setTimeout(() => { if (flake.parentNode) flake.remove(); }, 5000);
+        }
+      }, 200);
+    }
+
+    function initializeScene() {
+      const starsContainer = document.getElementById('stars');
+      const girlName = document.getElementById('girl-name');
+      const dogName = document.getElementById('dog-name');
+      const walkerName = document.getElementById('walker-name');
+      const chanduName = document.getElementById('chandu-name');
+      const button = document.getElementById('reveal-btn');
+      const message = document.getElementById('message');
+      
+      starsContainer.innerHTML = '';
+      
+      const starCount = window.innerWidth < 480 ? 50 : window.innerWidth < 768 ? 70 : 100;
+      for(let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        const size = window.innerWidth <= 480 ? 1 + Math.random() : (Math.random() * 2 + 1);
+        star.style.top = Math.random() * 100 + 'vh';
+        star.style.left = Math.random() * 100 + 'vw';
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        starsContainer.appendChild(star);
+      }
+
+      girlName.classList.remove('show');
+      dogName.classList.remove('show');
+      walkerName.classList.remove('show');
+      chanduName.classList.remove('show');
+      button.style.display = "none";
+      message.style.display = "none";
+      
+      if (fireworkInterval) { clearInterval(fireworkInterval); fireworkInterval = null; }
+      fireworksActive = false;
+      document.querySelectorAll('.firework-spark, .rocket, .celebration-particle').forEach(el => el.remove());
+
+      if (shootingStarInterval) { clearInterval(shootingStarInterval); }
+      const shootingInterval = window.innerWidth < 480 ? 4000 : window.innerWidth < 768 ? 3000 : 2000;
+      shootingStarInterval = setInterval(() => {
+        const shootingStar = document.createElement('div');
+        shootingStar.classList.add('shooting-star');
+        shootingStar.style.top = Math.random() * 50 + 'vh';
+        shootingStar.style.left = (Math.random() * 80 + 20) + 'vw';
+        starsContainer.appendChild(shootingStar);
+        setTimeout(() => { if (shootingStar.parentNode) { shootingStar.remove(); } }, 1000);
+      }, shootingInterval);
+
+      // Start season changes
+      if (seasonInterval) clearInterval(seasonInterval);
+      changeSeasons(); // Initial season
+      seasonInterval = setInterval(changeSeasons, 2000);
+
+      if (!animationStarted) {
+        animationStarted = true;
+        setTimeout(() => {
+          girlName.classList.add('show');
+          dogName.classList.add('show');
+          walkerName.classList.add('show');
+          chanduName.classList.add('show');
+          button.style.display = "block";
+        }, 500);
+      }
+    }
+
+    function createRocket() {
+      const rocket = document.createElement('div');
+      rocket.classList.add('rocket');
+      rocket.style.left = Math.random() * window.innerWidth + 'px';
+      rocket.style.bottom = '100px';
+      document.body.appendChild(rocket);
+      setTimeout(() => { if (rocket.parentNode) { rocket.parentNode.removeChild(rocket); } }, 1000);
+      setTimeout(() => { createFirework(parseInt(rocket.style.left), window.innerHeight - 400); }, 950);
+    }
+
+    function createFirework(x, y) {
+      const colors = ['#ff1744', '#ff9800', '#ffeb3b', '#4caf50', '#2196f3', '#9c27b0', '#e91e63', '#00bcd4'];
+      const sparkCount = window.innerWidth <= 480 ? 15 : 20 + Math.random() * 15;
+      for (let i = 0; i < sparkCount; i++) {
+        const spark = document.createElement('div');
+        spark.classList.add('firework-spark');
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        spark.style.background = color;
+        spark.style.boxShadow = `0 0 10px ${color}`;
+        const angle = (Math.PI * 2 * i) / sparkCount;
+        const velocity = window.innerWidth <= 480 ? 30 + Math.random() * 50 : 50 + Math.random() * 100;
+        const sparkX = x + Math.cos(angle) * velocity;
+        const sparkY = y + Math.sin(angle) * velocity;
+        spark.style.left = x + 'px';
+        spark.style.top = y + 'px';
+        spark.style.setProperty('--move-x', (sparkX - x) * 0.5 + 'px');
+        spark.style.setProperty('--move-y', (sparkY - y) * 0.5 + 'px');
+        document.body.appendChild(spark);
+        setTimeout(() => { if (spark.parentNode) { spark.remove(); } }, 1500);
+      }
+      createCelebrationParticles(x, y);
+    }
+
+    function createCelebrationParticles(x, y) {
+      const particleCount = window.innerWidth <= 480 ? 6 : 10;
+      const colors = ['#ffd700', '#ffeb3b', '#ff9800', '#ff5722'];
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('celebration-particle');
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        const spread = window.innerWidth <= 480 ? 60 : 100;
+        particle.style.left = (x + (Math.random() - 0.5) * spread) + 'px';
+        particle.style.top = (y + (Math.random() - 0.5) * spread) + 'px';
+        document.body.appendChild(particle);
+        setTimeout(() => { if (particle.parentNode) { particle.remove(); } }, 2000);
+      }
+    }
+
+    function startFireworks() {
+      if (fireworksActive) return;
+      fireworksActive = true;
+      const initialCount = window.innerWidth <= 480 ? 2 : 3;
+      for (let i = 0; i < initialCount; i++) { setTimeout(() => createRocket(), i * 200); }
+      const intervalTime = window.innerWidth <= 480 ? 2000 : 1500;
+      fireworkInterval = setInterval(() => {
+        const rocketCount = Math.random() < 0.7 ? 1 : (window.innerWidth <= 480 ? 1 : 2);
+        for (let i = 0; i < rocketCount; i++) { setTimeout(() => createRocket(), i * 300); }
+      }, intervalTime + Math.random() * 1000);
+    }
+
+    document.getElementById('reveal-btn').addEventListener("click", () => {
+     document.getElementById('message').style.display = "block";
+      startFireworks();
+    });
+
+    document.getElementById('message').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('message')) {
+        document.getElementById('message').style.display = 'none';
+      }
+    });
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => { initializeScene(); }, 250);
+    });
+    window.addEventListener('orientationchange', () => { setTimeout(() => { initializeScene(); }, 500); });
+    document.addEventListener('DOMContentLoaded', initializeScene);
+    if (document.readyState !== 'loading') { initializeScene(); }
+  </script>
+</body>
+</html>
