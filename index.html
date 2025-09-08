@@ -776,6 +776,52 @@
       }
     });
 
+    function initializeScene() {
+      const starsContainer = document.getElementById('stars');
+      const girlName = document.getElementById('girl-name');
+      const dogName = document.getElementById('dog-name');
+      const walkerName = document.getElementById('walker-name');
+      const chanduName = document.getElementById('chandu-name');
+      const button = document.getElementById('reveal-btn');
+      const message = document.getElementById('message');
+      
+      starsContainer.innerHTML = '';
+      
+      // Create party lights instead of stars
+      const lightCount = window.innerWidth < 480 ? 30 : window.innerWidth < 768 ? 50 : 70;
+      const colors = ['#ff6b9d', '#ffd700', '#4ecdc4', '#45b7d1', '#fd79a8', '#fdcb6e'];
+      
+      for(let i = 0; i < lightCount; i++) {
+        const light = document.createElement('div');
+        light.classList.add('party-light');
+        const size = window.innerWidth <= 480 ? 3 + Math.random() * 4 : 4 + Math.random() * 6;
+        light.style.top = Math.random() * 80 + 'vh';
+        light.style.left = Math.random() * 100 + 'vw';
+        light.style.width = size + 'px';
+        light.style.height = size + 'px';
+        light.style.background = colors[Math.floor(Math.random() * colors.length)];
+        light.style.animationDelay = Math.random() * 2 + 's';
+        starsContainer.appendChild(light);
+      }
+
+      createStringLights();
+      createConfetti();
+
+      girlName.classList.add('show');
+      dogName.classList.add('show');
+      walkerName.classList.add('show');
+      chanduName.classList.add('show');
+      button.style.display = "block";
+      message.style.display = "none";
+      
+      if (fireworkInterval) { clearInterval(fireworkInterval); fireworkInterval = null; }
+      fireworksActive = false;
+      stopBirthdayMusic();
+      document.querySelectorAll('.birthday-firework-spark, .birthday-rocket, .birthday-particle').forEach(el => el.remove());
+    }
+
+
+
     let resizeTimeout;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimeout);
@@ -802,5 +848,6 @@
   </script>
 </body>
 </html>
+
 
 
