@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>🎉 Happy Birthday Scene with Bears 🎂</title>
+  <title>🎉 Happy Birthday Scene with Characters 🎂</title>
   <style>
     :root {
       --size: 160px;    
@@ -299,32 +299,16 @@
       filter: drop-shadow(0 0 10px rgba(255, 105, 180, 0.5));
     }
 
-    .dogesh {
-      position: fixed;
-      bottom: 50px;
-      width: calc(var(--size) *0.35);
-      right: 35vw;
-      z-index: 10;
-    }
-
-    .dogesh img {
-      width: 100%;
-      height: auto;
-      filter: drop-shadow(0 0 10px rgba(255, 105, 180, 0.5));
-    }
-
     @media (max-width: 768px) {
       .character { left: 5vw; }
       .overlay { right: 5vw; }
       .chandu { right: 20vw; }
-      .dogesh { right: 30vw; }
     }
 
     @media (max-width: 480px) {
       .character { left: 3vw; }
       .overlay { right: 3vw; }
       .chandu { right: 18vw; }
-      .dogesh { right: 28vw; }
     }
 
     .name-cloud {
@@ -351,20 +335,8 @@
       50% { transform: translateX(-50%) translateY(-5px); }
     }
 
-    @media (max-width: 768px) {
-      .name-cloud { font-size: 13px; padding: 7px 12px; top: -45px; }
-    }
-    @media (max-width: 480px) {
-      .name-cloud { font-size: 12px; padding: 6px 10px; top: -40px; }
-    }
-
-    #dog .name-cloud {
-      top: auto;
-      bottom: -40px;
-    }
-
-    @media (max-width: 768px) { #dog .name-cloud { bottom: -35px; } }
-    @media (max-width: 480px) { #dog .name-cloud { bottom: -30px; } }
+    @media (max-width: 768px) { .name-cloud { font-size: 13px; padding: 7px 12px; top: -45px; } }
+    @media (max-width: 480px) { .name-cloud { font-size: 12px; padding: 6px 10px; top: -40px; } }
 
     /* Birthday Button */
     #reveal-btn {
@@ -456,11 +428,9 @@
     /* Landscape adjustments */
     @media (max-width: 768px) and (orientation: landscape) {
       .character, .overlay, .chandu { bottom: 60px; }
-      .dogesh { bottom: 30px; }
       #reveal-btn { bottom: 80px; }
       #message { top: 5%; max-height: 80vh; overflow-y: auto; }
       .name-cloud { top: -30px; }
-      #dog .name-cloud { bottom: -25px; }
       .birthday-tree { bottom: 60px; }
     }
 
@@ -574,23 +544,18 @@
   <div class="party-string-lights" id="string-lights"></div>
 
   <div class="character" id="walker">
-    <div class="name-cloud" id="walker-name">🐻 Fandi 🎈</div>
-    <img src="/be-my-friend/bear-panda-waiting.gif" alt="Birthday bear">
+    <div class="name-cloud" id="walker-name">🎉 Arjun 🎈</div>
+    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Arjun">
   </div>
 
   <div class="overlay" id="girl">
-    <div class="name-cloud" id="girl-name">🐻 Bittu 🎂</div>
-    <img src="/be-my-friend/busy-cute.gif" alt="Birthday bear">
+    <div class="name-cloud" id="girl-name">🎂 Radhamma 🎂</div>
+    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Radhamma">
   </div>
 
   <div class="chandu" id="chandu">
-    <div class="name-cloud" id="chandu-name">🐻 Chandu 🎉</div>
-    <img src="/be-my-friend/chandu.gif" alt="Birthday chandu">  
-  </div>
-
-  <div class="dogesh" id="dog">
-    <div class="name-cloud" id="dog-name">🐕 Neo 🎈</div>
-    <img src="/be-my-friend/dog.gif" alt="Birthday Neo"> 
+    <div class="name-cloud" id="chandu-name">🎊 Mallika 🎉</div>
+    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Mallika">  
   </div>
 
   <button id="reveal-btn">🎉 IT'S PARTY TIME! 🎂</button>
@@ -650,7 +615,6 @@
     function initializeScene() {
       const starsContainer = document.getElementById('stars');
       const girlName = document.getElementById('girl-name');
-      const dogName = document.getElementById('dog-name');
       const walkerName = document.getElementById('walker-name');
       const chanduName = document.getElementById('chandu-name');
       const button = document.getElementById('reveal-btn');
@@ -679,7 +643,6 @@
       createConfetti();
 
       girlName.classList.add('show');
-      dogName.classList.add('show');
       walkerName.classList.add('show');
       chanduName.classList.add('show');
       button.style.display = "block";
@@ -755,4 +718,50 @@
         for (let i = 0; i < rocketCount; i++) { 
           setTimeout(() => createBirthdayRocket(), i * 400); 
         }
-      }, intervalTime + Math.
+      }, intervalTime + Math.random() * 800);
+    }
+
+    document.getElementById('reveal-btn').addEventListener("click", () => {
+      document.getElementById('message').style.display = "block";
+      startBirthdayFireworks();
+      
+      // Add extra birthday celebration effects
+      setTimeout(() => {
+        const birthdayIndicator = document.getElementById('birthday-indicator');
+        birthdayIndicator.textContent = '🥳 BEST BIRTHDAY EVER! 🎊';
+        birthdayIndicator.style.fontSize = window.innerWidth <= 480 ? '22px' : '28px';
+      }, 1000);
+    });
+
+    document.getElementById('message').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('message')) {
+        document.getElementById('message').style.display = 'none';
+      }
+    });
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => { initializeScene(); }, 250);
+    });
+    
+    window.addEventListener('orientationchange', () => { 
+      setTimeout(() => { initializeScene(); }, 500); 
+    });
+    
+    document.addEventListener('DOMContentLoaded', initializeScene);
+    if (document.readyState !== 'loading') { initializeScene(); }
+    
+    // Birthday music simulation (visual beat effect)
+    setInterval(() => {
+      const bears = document.querySelectorAll('.bear-sprite');
+      bears.forEach(bear => {
+        bear.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+          bear.style.transform = 'scale(1)';
+        }, 200);
+      });
+    }, 1000);
+  </script>
+</body>
+</html>
